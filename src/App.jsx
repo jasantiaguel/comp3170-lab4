@@ -6,9 +6,10 @@ import './App.css';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [taskIdCounter, setTaskIdCounter] = useState(0);
+  const [filter, setFilter] = useState('all');
 
   const addTask = (taskName) => {
-    const newTask = { id: Date.now(), name: taskName, status: 'pending' };
+    const newTask = { id: taskIdCounter, name: taskName, status: 'pending' };
     setTasks([...tasks, newTask]);
     setTaskIdCounter(taskIdCounter + 1);
   };
@@ -25,14 +26,27 @@ function App() {
 
   const remainingTasks = tasks.filter(task => task.status === 'pending').length;
 
+  const filteredTasks = tasks.filter(task => {
+    if (filter === 'all') return true;
+    if (filter === 'completed') return task.status === 'completed';
+    if (filter === 'pending') return task.status === 'pending';
+    return true;
+  });
+
   return (
     <>
       <h1>Daily Planner</h1>
       <TaskForm onAddTask={addTask} />
+      <div>
+        <button onClick={() => setFilter('all')}>All</button>
+        <button onClick={() => setFilter('completed')}>Completed</button>
+        <button onClick={() => setFilter('pending')}>Pending</button>
+      </div>
       <h2>You have {remainingTasks} tasks remaining</h2>
       <div className="task-list">
-        {tasks.map(task => (
+        {filteredTasks.map(task => (
           <Task 
+            key={task.id} 
             task={task} 
             onToggleStatus={() => toggleTaskStatus(task.id)} 
             onDelete={() => deleteTask(task.id)} 

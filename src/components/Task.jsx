@@ -8,6 +8,7 @@ export default function Task({ task, onToggleStatus, onDelete }) {
         type="checkbox" 
         checked={task.status === 'completed'} 
         onChange={onToggleStatus} 
+        disabled={task.status === 'completed'}
       />
       <span className={task.status === 'completed' ? 'completed' : ''}>
         {task.name}
